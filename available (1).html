@@ -1,0 +1,223 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Rooms Page</title>
+    <!-- Add your styles or additional metadata here -->
+    <style>
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 70vh;
+            margin: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 15px 25px; /* Adjust padding if needed */
+            font-size: 13px; /* Adjust the font size as needed */
+            border: none;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .title {
+            padding-top: 10%;
+            margin : 0;
+            padding-bottom : 0;
+        }
+
+        hr {
+            width: 55%;
+            height: 1px;
+            background-color: lightgray;
+            margin: 5px 0;
+            margin-bottom : 5%;
+        }
+
+        .room-container {
+            display: flex;
+            flex-direction: row;
+            /*align-items: center;*/
+            gap: 30px;
+            /*margin-top: 5px;*/
+            flex-wrap: wrap;
+        }
+        .room {
+            display: flex; /* Use flex display to align items */
+            flex-direction: column;
+            text-align:left; /* Center items vertically */
+            justify-content: flex-start;
+            width: 180px; /* Adjust the width as needed */
+            height: 350px; /* Adjust the height as needed */
+            /*padding: 10%;*/
+            border-radius: 15px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 1.1em;
+            /*margin-bottom: 10px;*/
+            cursor: pointer; /* Add cursor pointer for better indication */
+            transition: transform 0.2s ease-in-out; /* Add a smooth transition effect */
+            /*line-height: 1.4; /* Adjust the line height as needed */
+        }
+
+        .room:hover {
+            transform: scale(1.05); /* Enlarge the room on hover */
+        }
+
+        .room-number {
+            font-size: 1.7em; /* Adjust the font size as needed */
+            margin : 10px 0 0;
+            }
+
+        .room-number509 {
+            margin-left : 10px;
+            min-height: 15px;
+            border-left: 8px solid #ffbe0b;
+            margin-top: 10px; 
+            margin-right: 100px;
+            padding-left : 10px;
+        }
+
+        .room-number415 {
+            margin-left: 10px;
+            min-height: 15px;
+            border-left: 8px solid #fb5607;
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+
+        .room-number414 {
+            margin-left: 10px;
+            min-height: 15px;
+            border-left: 8px solid #8338ec;
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+
+        .room-number304 {
+            margin-left: 10px;
+            min-height: 15px;
+            border-left: 8px solid #3a86ff;
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+    </style>
+
+
+</head>
+<body>
+    <button class="back-button" onclick="location.href='ClassroomBooking.html'">Back</button>
+
+    <!-- When There is any Available -->
+
+    <h1 class="title">Available Rooms</h1>
+    <h2>Great news! Class Rooms are Available for the Selected Time.</h2>
+
+    <hr>
+
+    <div class="room-container">
+        <!--<?php
+        // Example dynamic options based on selected times
+        $selectedStartTime = $_GET['startTime'];
+        $selectedEndTime = $_GET['endTime'];
+
+        // Example conditions for dynamic options
+        if ($selectedStartTime >= '09:00' && $selectedEndTime <= '12:00') {-->
+        <div class="room-container">
+            <button class="room room509" onclick="handleRoomClick('509')">
+                <div class="room-number509"><h2>509</h2></div>
+                <ul>
+                    <li>Capacity: 30</li>
+                    <li>Projector: Yes</li>
+                </ul>
+            </button>
+            <button class="room room415" onclick="handleRoomClick('415')">
+                <div class="room-number415"><h2>415</h2></div>
+                <ul>
+                    <li>Capacity: 25</li>
+                    <li>Projector: No</li>
+                </ul>
+            </button>
+            <button class="room room414" onclick="handleRoomClick('414')">
+                <div class="room-number414"><h2>414</h2></div>
+                <ul>
+                    <li>Capacity: 40</li>
+                    <li>Projector: Yes</li>
+                </ul>
+            </button>
+            <button class="room room304" onclick="handleRoomClick('304')">
+                <div class="room-number304"><h2>304</h2></div>
+                <ul>
+                    <li>Capacity: 50</li>
+                    <li>Projector: Yes</li>
+                </ul>
+            </button>
+            <!--} else {
+            <p>No rooms available for the selected times</p>-->
+        </div>
+
+        <script>
+            function handleRoomClick(roomNumber) {
+                alert('Room ' + roomNumber + ' selected!'); // You can replace this with your own logic
+            }
+        </script>
+
+    </div>
+    <!--
+    <!-- When There is no Available Room
+
+    <div class="not-available-content">
+        <h1 class="msg1">Room Not Available</h1>
+        <h2 class="msg2">Sorry, The Lecture Room is Not Available for the Selected time.</h2>
+        <hr>
+        <h2 class="msg3">Please Check the timetable of the day and Select Again.</h2>
+    </div>
+
+    <!-- Dynamic options based on conditions 
+    
+    <ul>
+        <?php
+        // Example dynamic options based on selected times
+        $selectedStartTime = $_GET['startTime'];
+        $selectedEndTime = $_GET['endTime'];
+
+        // Example conditions for dynamic options
+        if ($selectedStartTime >= '09:00' && $selectedEndTime <= '12:00') {
+            echo '<li>Option 1</li>';
+            echo '<li>Option 2</li>';
+        } elseif ($selectedStartTime >= '13:00' && $selectedEndTime <= '16:00') {
+            echo '<li>Option 3</li>';
+            echo '<li>Option 4</li>';
+            echo '<li>Option 5</li>';
+        } else {
+            echo '<li>No options available for the selected times</li>';
+        }
+        ?>
+    </ul>
+    
+
+    <script>
+        function toggleContent() {
+            var availableContent = document.querySelector('.available-content');
+            var notAvailableContent = document.querySelector('.not-available-content');
+
+            if (availableContent.style.display === 'none') {
+                availableContent.style.display = 'block';
+                notAvailableContent.style.display = 'none';
+            } else {
+                availableContent.style.display = 'none';
+                notAvailableContent.style.display = 'block';
+            }
+        }
+    </script>-->
+</body>
+</html>
