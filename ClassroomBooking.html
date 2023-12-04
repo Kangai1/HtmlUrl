@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Lecture Room Booking Service</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Questrial&display=swap');
+
+        body {  background-color: #F2F2F2;  }
+
+        .container{
+            display : flex;
+            justify-content : space-between;
+            align-items : center;
+        }
+        .login{
+            /*margin-top : 10%;*/
+            margin-left : 7%;
+            text-align : left;
+        }
+
+        .login > .warning {
+            /*margin-top : 5%;*/
+            margin-left :0;
+            color : #DF0101;
+        }
+
+        div {
+            background-color: white;
+            height: auto;
+            width: 700px;
+            margin: 0px;
+            padding: 30px;
+            margin-top: 2%;
+            margin-left: 25%;
+            border-radius: 5px;
+            box-shadow: 0px 40px 30px -20px rgba(0,0,0,0.3);
+        }
+        .main-title {
+            text-align: center;
+            font-weight: bolder;
+            margin-top: 60px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-weight: lighter;
+            margin-top: 10px;
+        }
+
+        td {
+            width: 50px;
+            height: 50px;
+        }
+
+        .Calendar {
+            text-align: center;
+        }
+
+        .Calendar>thead>tr:first-child>td {
+            font-family: 'Questrial', sans-serif;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .Calendar>thead>tr:last-child>td {
+            font-family: 'Questrial', sans-serif;
+            font-weight: 600;     
+        }
+
+        .Calendar>tbody>tr>td>p {
+            font-family: 'Montserrat', sans-serif;
+            height: 45px;
+            width: 45px;
+            border-radius: 45px;
+            transition-duration: .2s;
+            line-height: 45px;
+            margin: 2.5px;
+            display: block;
+            text-align: center;
+
+        }        
+
+        .pastDay {
+            color: lightgray;
+        }
+
+        .today {
+            background-color: #F5D042;            
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .futureDay {
+            background-color: #FFFFFF;
+            cursor: pointer;
+        }
+        .futureDay:hover{
+            background:#eee;
+        }
+
+        .futureDay.choiceDay,
+        .today.choiceDay {
+            background: #0A174E;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .confirm-button {
+            text-align: center;
+            margin-top: 2%;
+            border-radius: 10px;
+        }
+
+        .custom-button {
+            background-color: gainsboro;
+            width: 100px; 
+            height: 40px; 
+            border-radius: 10px; 
+            font-size: 13px;
+            font-weight: bold;
+            line-height: 30px; 
+            text-align: center;
+            cursor: pointer; 
+            transition: background-color 0.2s; 
+            &:active
+
+        {
+            background-color: #e0e0e0; 
+        }
+
+        }
+        
+    </style>
+
+    <script>
+        window.onload = function () { buildCalendar(); }  
+
+        let nowMonth = new Date(); 
+        let today = new Date();     
+        today.setHours(0, 0, 0, 0); 
+
+        function buildCalendar() {
+
+            let firstDate = new Date(nowMonth.getFullYear(), nowMonth.getMonth(), 1);     // 이번달 1일
+            let lastDate = new Date(nowMonth.getFullYear(), nowMonth.getMonth() + 1, 0);  // 이번달 마지막날
+
+            let tbody_Calendar = document.querySelector(".Calendar > tbody");
+            document.getElementById("calYear").innerText = nowMonth.getFullYear() + '. ';             // 연도 숫자 갱신
+            document.getElementById("calMonth").innerText = leftPad(nowMonth.getMonth() + 1);  // 월 숫자 갱신
+
+            while (tbody_Calendar.rows.length > 0) {                        // 이전 출력결과가 남아있는 경우 초기화
+                tbody_Calendar.deleteRow(tbody_Calendar.rows.length - 1);
+            }
+
+            let nowRow = tbody_Calendar.insertRow();        // 첫번째 행 추가           
+
+            for (let j = 0; j < firstDate.getDay(); j++) {  // 이번달 1일의 요일만큼
+                let nowColumn = nowRow.insertCell();        // 열 추가
+            }
+
+            for (let nowDay = firstDate; nowDay <= lastDate; nowDay.setDate(nowDay.getDate() + 1)) {   // day는 날짜를 저장하는 변수, 이번달 마지막날까지 증가시키며 반복  
+
+                let nowColumn = nowRow.insertCell();        // 새 열을 추가하고
+
+
+                let newDIV = document.createElement("p");
+                newDIV.innerHTML = leftPad(nowDay.getDate());        // 추가한 열에 날짜 입력
+                nowColumn.appendChild(newDIV);
+
+                if (nowDay.getDay() == 6) {                 // 토요일인 경우
+                    nowRow = tbody_Calendar.insertRow();    // 새로운 행 추가
+                }
+
+                if (nowDay < today) {                       // 지난날인 경우
+                    newDIV.className = "pastDay";
+                }
+                else if (nowDay.getFullYear() == today.getFullYear() && nowDay.getMonth() == today.getMonth() && nowDay.getDate() == today.getDate()) { // 오늘인 경우           
+                    newDIV.className = "today";
+                    newDIV.onclick = function () { choiceDate(this); }
+                }
+                else {                                      // 미래인 경우
+                    newDIV.className = "futureDay";
+                    newDIV.onclick = function () { choiceDate(this); }
+                }
+            }
+        }
+
+        // 날짜 선택
+        function choiceDate(newDIV) {
+            if (document.getElementsByClassName("choiceDay")[0]) {                              // 기존에 선택한 날짜가 있으면
+                document.getElementsByClassName("choiceDay")[0].classList.remove("choiceDay");  // 해당 날짜의 "choiceDay" class 제거
+            }
+            newDIV.classList.add("choiceDay");           // 선택된 날짜에 "choiceDay" class 추가
+        }
+
+        // 이전달 버튼 클릭
+        function prevCalendar() {
+            nowMonth = new Date(nowMonth.getFullYear(), nowMonth.getMonth() - 1, nowMonth.getDate());   // 현재 달을 1 감소
+            buildCalendar();    // 달력 다시 생성
+        }
+        // 다음달 버튼 클릭
+        function nextCalendar() {
+            nowMonth = new Date(nowMonth.getFullYear(), nowMonth.getMonth() + 1, nowMonth.getDate());   // 현재 달을 1 증가
+            buildCalendar();    // 달력 다시 생성
+        }
+
+        // input값이 한자리 숫자인 경우 앞에 '0' 붙혀주는 함수
+        function leftPad(value) {
+            if (value < 10) {
+                value = "0" + value;
+                return value;
+            }
+            return value;
+        }
+
+        /*Function that enable to select time by 30 mins*/
+        function roundToNearest30Minutes(inputId) {
+            let inputElement = document.getElementById(inputId);
+            let inputValue = inputElement.value;
+
+            // Parser input time
+            let parsedTime = new Date(`2000-01-01T${inputValue}`);
+
+            // Round mins 
+            let roundedMinutes = Math.round(parsedTime.getMinutes() / 30) * 30;
+
+            parsedTime.setMinutes(roundedMinutes);
+            inputElement.value = parsedTime.toTimeString().slice(0, 5);
+            if (parsedTime.getHours() < 8 || parsedTime.getHours() > 21) {
+                alert('올바르지 않은 시간을 입력했습니다. 시간은 8시부터 21시 사이어야 합니다.');
+                // Input Reset
+                inputElement.value = '';
+            } else {
+                // Check whether time duration over 3hrs 
+                let endTimeElement = document.getElementById('endTimeInput');
+                let endTimeValue = endTimeElement.value;
+                let endParsedTime = new Date(`2000-01-01T${endTimeValue}`);
+                let durationInHours = (endParsedTime - parsedTime) / (1000 * 60 * 60);
+
+                if (durationInHours > 3) {
+                    alert('Maximum Available Time is 3Hours');
+                    // Input Reset
+                    inputElement.value = '';
+                    endTimeElement.value = '';
+                }
+            }
+        }
+
+        // Function to check if ID is entered
+        function isIdEntered() {
+            let id = document.querySelector('input[name="ID"]').value;
+            return id !== '';
+        }
+
+        // Function to check if date to use classroom is selected
+        function isDateSelected() {
+            let selectedDate = document.querySelector('.choiceDay');
+            return selectedDate !== null;
+        }
+
+        // Function to check if both start and end times are selected
+        function areTimesSelected() {
+            let startTime = document.querySelector('input[name="StartTime"]').value;
+            let endTime = document.querySelector('input[name="EndTime"]').value;
+            return startTime !== '' && endTime !== '';
+        }
+
+        // Function to handle confirm button click
+        function handleConfirm() {
+            if (isDateSelected()) {
+                window.location.href = 'available.html';
+            } else {
+                // No date selected, show error message
+                alert('Please check a Student ID, Date, Start Time, or End Time before Confirming.');
+            }
+        }
+
+        //Greedy Algorithm to Set Time Table
+        class ClassScheduler {
+            constructor() {
+                this.START_TIME = 9 * 60; // 9:00 AM
+                this.END_TIME = 18 * 60; // 6:00 PM
+                this.LUNCH_START = 12 * 60; // Start of lunch break (12:00 PM)
+                this.LUNCH_END = 14 * 60; // End of lunch break (2:00 PM)
+                this.CLASSROOMS = ["509", "414", "415", "309"];
+            }
+
+            generateClasses() {
+                const classList = new ClassList();
+                const rand = new Random();
+
+                // Names of classes for a software department
+                const classNames = ["Algorithms", "Data Structures", "Databases", "Operating Systems", "Computer Networks", "Artificial Intelligence"];
+
+                for (const className of classNames) {
+                    const duration = 60 + rand.nextInt(3) * 60; // Duration between 1 to 3 hours
+                    classList.addClass(new Class(className + " - Section 1", duration)); // First instance
+                    classList.addClass(new Class(className + " - Section 2", duration)); // Second instance
+                }
+
+                return classList;
+            }
+
+            main() {
+                const classList = this.generateClasses();
+
+                // Set next available time for each classroom
+                const nextAvailableTime = {};
+                for (const classroom of this.CLASSROOMS) {
+                    nextAvailableTime[classroom] = this.START_TIME;
+                }
+
+                // Assign each class to an available classroom
+                for (const cls of classList.getClasses()) {
+                    let classAssigned = false;
+                    for (const classroom of this.CLASSROOMS) {
+                        let availableTime = nextAvailableTime[classroom];
+
+                        // Adjust for lunchtime
+                        if (availableTime < this.LUNCH_END) {
+                            if (availableTime < this.LUNCH_START && availableTime + cls.duration > this.LUNCH_START) {
+                                availableTime = this.LUNCH_END;
+                            }
+                        }
+
+                        // Check if class can be scheduled before the end of the day
+                        if (availableTime + cls.duration <= this.END_TIME) {
+                            cls.startTime = availableTime;
+                            cls.endTime = availableTime + cls.duration;
+                            cls.classroom = classroom;
+                            nextAvailableTime[classroom] = cls.endTime;
+
+                            console.log("Assigned " + cls);
+                            classAssigned = true;
+                            break;
+                        }
+                    }
+
+                    if (!classAssigned) {
+                        console.log("Unable to assign " + cls.name + " to any classroom.");
+                    }
+                }
+            }
+        }
+
+        class ScheduleExample {
+            constructor(numClassrooms) {
+                this.scheduleManager = new ScheduleManager();
+                this.visited = new Array(numClassrooms).fill(false); // Assuming numClassrooms is the total number of classrooms
+                this.addClassSchedules();
+            }
+
+            addClassSchedules() {
+                this.scheduleManager.addClassSchedule("Algorithm", "1", "classroom509", "09:00", "11:00");
+                this.scheduleManager.addClassSchedule("Algorithm", "2", "classroom509", "11:00", "13:00");
+                this.scheduleManager.addClassSchedule("Database", "1", "classroom509", "13:00", "15:00");
+                this.scheduleManager.addClassSchedule("Database", "2", "classroom509", "15:00", "17:00");
+                this.scheduleManager.addClassSchedule("Artificial Intelligence", "1", "classroom414", "09:00", "11:00");
+                this.scheduleManager.addClassSchedule("Artificial Intelligence", "2", "classroom414", "14:00", "16:00");
+                this.scheduleManager.addClassSchedule("Data Structure", "1", "classroom414", "16:00", "18:00");
+                this.scheduleManager.addClassSchedule("Data Structure", "2", "classroom415", "09:00", "12:00");
+                this.scheduleManager.addClassSchedule("Operating System", "1", "classroom415", "14:00", "15:00");
+                this.scheduleManager.addClassSchedule("Operating System", "2", "classroom415", "15:00", "18:00");
+                this.scheduleManager.addClassSchedule("Computer Network", "1", "classroom309", "09:00", "12:00");
+                this.scheduleManager.addClassSchedule("Computer Network", "2", "classroom309", "14:00", "15:00");
+            }
+
+            isTimeValid(time) {
+                const parts = time.split(":");
+                const hour = parseInt(parts[0]);
+                return hour >= 8 && hour < 21;
+            }
+
+            isTimeSlotWithinClass(startTime, endTime, classroom) {
+                for (const schedule of this.scheduleManager.getSchedule()) {
+                    if (classroom === schedule.getRoom()) {
+                        const start = LocalTime.parse(startTime);
+                        const end = LocalTime.parse(endTime);
+                        if (!start.isAfter(schedule.getEndTime()) && !end.isBefore(schedule.getStartTime())) {
+                            return false; // Time slot overlaps
+                        }
+                    }
+                }
+                return true; // No overlap
+            }
+
+            visitClassrooms(startTime, endTime) {
+                const availableClassrooms = new Set();
+                for (let i = 0; i < this.scheduleManager.getSchedule().length; i++) {
+                    const classroom = this.scheduleManager.getRoom(i);
+                    if (this.isTimeSlotWithinClass(startTime, endTime, classroom)) {
+                        availableClassrooms.add(classroom);
+                    }
+                }
+                return Array.from(availableClassrooms);
+            }
+
+            handleReservation(startTime, endTime) {
+                const availableClassrooms = this.visitClassrooms(startTime, endTime);
+                if (availableClassrooms.length === 0) {
+                    console.log("No available time slots.");
+                } else {
+                    console.log("Available classrooms: " + availableClassrooms);
+                    console.log("Please select a classroom to book: ");
+                    const chosenClassroom = prompt("Enter the classroom to book: ");
+                    if (availableClassrooms.includes(chosenClassroom)) {
+                        console.log("Reservation successful for " + chosenClassroom);
+                    } else {
+                        console.log("Invalid selection. Reservation not made.");
+                    }
+                }
+            }
+
+            main() {
+                const numClassrooms = 10;
+                const example = new ScheduleExample(numClassrooms);
+                const startTime = prompt("Enter start time (HH:MM): ");
+                const endTime = prompt("Enter end time (HH:MM): ");
+                if (example.isTimeValid(startTime) && example.isTimeValid(endTime)) {
+                    example.handleReservation(startTime, endTime);
+                } else {
+                    console.log("Invalid reservation time. Please choose a time between 08:00 and 21:00.");
+                }
+            }
+        }
+
+        // Not to Get Same Booking for same time
+        class ScheduleManager {
+            constructor() {
+                this.schedules = [];
+            }
+
+            addClassSchedule(courseName, group, room, startTime, endTime) {
+                this.schedules.push(new ClassSchedule(courseName, group, room, new Date(`2000-01-01T${startTime}`), new Date(`2000-01-01T${endTime}`)));
+            }
+
+            isTimeSlotWithinClass(startTime, endTime, classroom) {
+                const start = new Date(`2000-01-01T${startTime}`);
+                const end = new Date(`2000-01-01T${endTime}`);
+                return this.schedules
+                    .filter(schedule => schedule.room === classroom)
+                    .some(schedule => !(start > schedule.endTime || end < schedule.startTime));
+            }
+
+            getSchedule() {
+                return this.schedules;
+            }
+
+            getRoom(index) {
+                return this.schedules[index].room;
+            }
+        }
+
+        class ClassList {
+            constructor() {
+                this.classes = [];
+            }
+
+            addClass(cls) {
+                this.classes.push(cls);
+            }
+
+            getClasses() {
+                return this.classes;
+            }
+        }
+
+        class Class {
+            constructor(name, duration) {
+                this.name = name;
+                this.duration = duration;
+            }
+
+            toString() {
+                return `${this.name} in classroom ${this.classroom} from ${this.formatTime(this.startTime)} to ${this.formatTime(this.endTime)}`;
+            }
+
+            formatTime(time) {
+                const hours = Math.floor(time / 60);
+                const minutes = time % 60;
+                return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+            }
+        }
+
+        class ClassSchedule {
+            constructor(courseName, group, room, startTime, endTime) {
+                this.courseName = courseName;
+                this.group = group;
+                this.room = room;
+                this.startTime = startTime;
+                this.endTime = endTime;
+            }
+        }
+
+        function displayReservedSchedule() {
+            const scheduleContainer = document.getElementById('reservedSchedule');
+
+            const reservedSchedules = [
+                { classroom: 'classroom509', startTime: '09:00', endTime: '11:00', courseName: 'Algorithm' },
+                { classroom: 'classroom414', startTime: '14:00', endTime: '16:00', courseName: 'Artificial Intelligence' }
+            ];
+
+            while (scheduleContainer.firstChild) {
+                scheduleContainer.removeChild(scheduleContainer.firstChild);
+            }
+
+            reservedSchedules.forEach(schedule => {
+                const scheduleElement = document.createElement('p');
+                scheduleElement.textContent = `${schedule.courseName} (${schedule.classroom}) - ${schedule.startTime} ~ ${schedule.endTime}`;
+                scheduleContainer.appendChild(scheduleElement);
+            });
+        }
+
+
+        displayReservedSchedule();
+
+
+    </script>
+</head>
+
+<body>
+    <h1 class="main-title"><b>Lecture Room Booking Service</b></h1>
+    <h2 class="subtitle">Department of AI•Software</h2>
+
+    <div class="container">
+        <form class="login" name="http://localhost/login.php">
+            <p><b>ID</b> <input type="number" style="text-align: center; font-weight : bold"></p>
+            <p><b><br />Start Time </b><input type="time" name="StartTime" id="startTimeInput" style="text-align: center; font-weight: bold" onchange="roundToNearest30Minutes('startTimeInput')"></p>
+            <p><b><br />End Time </b><input type="time" name="EndTime" id="endTimeInput" style="text-align: center; font-weight: bold" onchange="roundToNearest30Minutes('endTimeInput')"></p>
+            <p class="warning"><b>※</b> The maximum allowable <br /> reservation time is "3 hours".</p>
+        </form>
+        <table class="Calendar">
+            <thead>
+                <tr>
+                    <td onClick="prevCalendar();" style="cursor:pointer;">&#60;</td>
+                    <td colspan="5">
+                        <span id="calYear">2023 / </span>
+                        <span id="calMonth">11</span>
+                    </td>
+                    <td onClick="nextCalendar();" style="cursor:pointer;">&#62;</td>
+                </tr>
+                <tr>
+                    <td>Sun</td>
+                    <td>Mon</td>
+                    <td>Tue</td>
+                    <td>Wed</td>
+                    <td>Thu</td>
+                    <td>Fri</td>
+                    <td>Sat</td>
+                </tr>
+            </thead>
+
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <p class="confirm-button" onclick="handleConfirm()">
+        <input type="submit" class="custom-button" value="confirm">
+    </p>
+
+    <script>
+        window.onload = function () {
+            buildCalendar();
+            displayReservedSchedule();
+        }
+    </script>
+
+</body>
+
+</html>

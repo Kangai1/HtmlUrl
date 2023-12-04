@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Available Page</title>
+    <!-- Add your styles or additional metadata here -->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 15px 25px; /* Adjust padding if needed */
+            font-size: 13px; /* Adjust the font size as needed */
+            border: none;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        hr {
+            margin-top : 1%;
+            width: 43%;
+            height: 1px;
+            background-color: dimgray;
+        }
+
+        .msg1 {
+            font-size: 2em; /* Adjust the size as needed */
+            font-weight: bold; /* Optionally set the font weight */
+            /* Add other styling properties as needed */
+        }
+
+        .msg2{
+            padding-top : 0px;
+        }
+
+        .timetable-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Adjust the number of columns as needed */
+            gap: 20px; /* Adjust the gap between grid items as needed */
+        }
+
+        /* Add this style for longer rectangles */
+        .timetable-container {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: left;
+            min-width: 150px; /* Adjust the minimum width as needed */
+            min-height: 400px;
+        }
+
+        .room509 {
+            margin-left: 10px;
+            min-height: 15px;
+            border-left: 8px solid #ffbe0b;
+            margin-top: 10px;
+            margin-right: 100px;
+            padding-left: 10px;
+        }
+
+        .room415 {
+            margin-left: 10px;
+            min-height: 15px;
+            border-left: 8px solid #fb5607;
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+
+        .room414 {
+            margin-left: 10px;
+            min-height: 15px;
+            border-left: 8px solid #8338ec;
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+
+        .room304 {
+            margin-left: 10px;
+            min-height: 15px;
+            border-left: 8px solid #3a86ff;
+            margin-top: 10px;
+            padding-left: 10px;
+        }
+        .timetable-container ul li {
+            font-size: 20px; /* Adjust the font size as needed */
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="location.href='ClassroomBooking.html'">Back</button>
+
+    <h1 class="msg1">Room Not Available</h1>
+    <h2 class="msg2">Sorry, The Class Room is Not Available for the Selected time.</h2>
+
+    <hr>
+
+    <h2 class="msg3">Please Check time table of the day and Select Again.</h2>
+
+    <div class="timetable-grid">
+        <!-- Container for Room 1 timetable -->
+        <div class="timetable-container">
+            <h2 class="room304">304</h2>
+            <!-- Add your timetable content for Room 1 here -->
+            <ul>
+                <li>Time Slot 1</li>
+                <li>Time Slot 2</li>
+                <!-- Add more as needed -->
+            </ul>
+        </div>
+
+        <!-- Container for Room 2 timetable -->
+        <div class="timetable-container">
+            <h2 class="room414">414</h2>
+            <ul>
+                <li>Time Slot 1</li>
+                <li>Time Slot 2</li>
+            </ul>
+        </div>
+
+        <!-- Container for Room 3 timetable -->
+        <div class="timetable-container">
+            <h2 class="room415">415</h2>
+            <ul>
+                <li>Time Slot 1</li>
+                <li>Time Slot 2</li>
+            </ul>
+        </div>
+
+        <!-- Container for Room 4 timetable -->
+        <div class="timetable-container">
+            <h2 class="room509">509</h2
+            <ul>
+                <li>Time Slot 1</li>
+                <li>Time Slot 2</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
